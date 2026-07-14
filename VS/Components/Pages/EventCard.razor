@@ -1,0 +1,24 @@
+@if (EventData == null || string.IsNullOrWhiteSpace(EventData.Name))
+{
+    <!-- Control de errores: Mensaje alternativo si el dato es inválido o está vacío -->
+    <div class="card error-card" style="border: 1px solid red; padding: 15px; margin: 10px; color: red;">
+        <p>Error: Datos de evento no válidos o incompletos.</p>
+    </div>
+}
+else
+{
+    <!-- Tarjeta normal optimizada -->
+    <div class="card" style="width: 18rem; margin: 10px; border: 1px solid #ccc; padding: 15px;">
+        <h3>@EventData.Name</h3>
+        <p><strong>Fecha:</strong> @(EventData.Date == default ? "Por confirmar" : EventData.Date.ToShortDateString())</p>
+        <p><strong>Lugar:</strong> @(string.IsNullOrWhiteSpace(EventData.Location) ? "En línea / Por definir" : EventData.Location)</p>
+        
+        <!-- Codificación del parámetro para evitar rutas rotas en el navegador -->
+        <a href="/event-details/@Uri.EscapeDataString(EventData.Name)" class="btn btn-primary">Ver detalles</a>
+    </div>
+}
+
+@code {
+    [Parameter] 
+    public Event EventData { get; set; } = new();
+}

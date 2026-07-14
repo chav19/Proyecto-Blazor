@@ -1,0 +1,51 @@
+﻿@page "/"
+@page "/events"
+
+<h3>Próximos Eventos - STG</h3>
+@inject UserSession Session
+
+<!-- Panel de Control de Sesión y Asistencia (Actividad 3) -->
+<div style="background-color: #eef2f7; padding: 15px; margin: 15px 0; border-left: 5px solid #0056b3; border-radius: 4px;">
+    <h4>📊 Panel de Control del Asistente</h4>
+    <p><strong>Bienvenido:</strong> @Session.UserName</p>
+    <p><strong>Tus Eventos Inscritos (@Session.RegisteredEvents.Count):</strong></p>
+    @if (Session.RegisteredEvents.Count == 0)
+    {
+        <span style="color: gray; font-style: italic;">No te has inscrito a ningún evento aún.</span>
+    }
+    else
+    {
+        <ul>
+            @foreach (var registeredEvent in Session.RegisteredEvents)
+            {
+                <li>✅ @registeredEvent</li>
+            }
+        </ul>
+    }
+</div>
+<div class="event-list" style="display: flex; flex-wrap: wrap;">
+    @if (MockEvents == null || !MockEvents.Any())
+    {
+        <p>No hay eventos disponibles en este momento.</p>
+    }
+    else
+    {
+        @foreach (var ev in MockEvents)
+        {
+            <!-- OPTIMIZACIÓN: @key le da un identificador único a cada tarjeta para acelerar el renderizado -->
+            <EventCard @key="ev.Name" EventData="ev" />
+        }
+    }
+</div>
+
+@code {
+    private List<Event> MockEvents = new()
+    {
+        new Event { Name = "Conferencia Tech 2026", Date = new DateTime(2026, 8, 15), Location = "Ciudad de México" },
+        new Event { Name = "Gala de Caridad", Date = new DateTime(2026, 9, 22), Location = "Monterrey" },
+        new Event { Name = "Taller de Blazor", Date = new DateTime(2026, 10, 05), Location = "Guadalajara" },
+        // Caso de prueba límite (Dato inválido/vacío para probar que el programa funciona correctamente y no se rompa)
+        // quitar // para que deje de ser comentario y comprobar el control de errores en EventCard.razzoer
+        //new Event { Name = "", Location = "" } 
+    };
+}

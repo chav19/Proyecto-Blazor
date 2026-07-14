@@ -1,0 +1,16 @@
+﻿<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <!-- Captura cualquier enlace roto y muestra un aviso limpio al usuario -->
+        <LayoutView Layout="@typeof(Layout.MainLayout)">
+            <div style="padding: 40px; text-align: center;">
+                <h2>🚫 Página no encontrada</h2>
+                <p>Lo sentimos, el enlace al que intentas acceder en EventEase no existe.</p>
+                <a href="/" style="color: blue; text-decoration: underline;">Volver al Inicio seguro</a>
+            </div>
+        </LayoutView>
+    </NotFound>
+</Router>

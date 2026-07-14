@@ -1,0 +1,76 @@
+@page "/register/{EventName}"
+@inject UserSession Session
+@inject NavigationManager Navigation
+
+<h3>Registro de Asistencia para: @EventName</h3>
+
+<!-- Contenedor del estado de la sesión actual -->
+<div style="background-color: #f0f0f0; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+    👤 <strong>Usuario actual en sesión:</strong> @Session.UserName
+</div>
+
+@if (IsRegistered)
+{
+    <div style="color: green; padding: 15px; border: 1px solid green; background-color: #e6ffe6; margin-bottom: 15px;">
+        ¡Registro exitoso! Te has inscrito correctamente a este evento.
+    </div>
+    <a href="/" class="btn btn-secondary">← Volver al inicio</a>
+}
+else
+{
+    <!-- Formulario nativo con validación automática -->
+    <EditForm Model="@RegModel" OnValidSubmit="HandleValidSubmit" style="max-width: 400px; display: flex; flex-direction: column; gap: 15px;">
+        <DataAnnotationsValidator />
+        
+        <div>
+            <label style="display:block;">Nombre Completo:</label>
+            <InputText @bind-Value="RegModel.FullName" style="width:100%; padding:6px;" />
+            <ValidationMessage For="@(() => RegModel.FullName)" style="color:red;" />
+        </div>
+
+        <div>
+            <label style="display:block;">Correo Electrónico:</label>
+            <InputText @bind-Value="RegModel.Email" style="width:100%; padding:6px;" />
+            <ValidationMessage For="@(() => RegModel.Email)" style="color:red;" />
+        </div>
+
+        <button type="submit" style="padding: 10px; background-color: blue; color: white; border: none; cursor: pointer;">
+            Confirmar e Inscribirse
+        </button>
+    </EditForm>
+    
+    <br />
+    <a href="/" style="color: gray;">Cancelar y regresar</a>
+}
+
+@code {
+    [Parameter] public string EventName { get; set; } = string.Empty;
+    private RegistrationForm RegModel { get; set; } = new();
+    private bool IsRegistered = false;
+
+    private void HandleValidSubmit()
+    {
+        // 1. Guardamos el nombre en el rastreador de estado global (State Management)
+        Session.Login(RegModel.FullName);
+        
+        // 2. Agregamos el evento al rastreador de asistencia (Attendance Tracker)
+        if (!Session.RegisteredEvents.Contains(EventName))
+        {
+            Session.RegisteredEvents.Add(EventName);
+        }
+
+        IsRegistered = true;
+    }
+
+    // Clase auxiliar para definir las reglas del formulario
+    public class RegistrationForm
+    {
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "El nombre es obligatorio.")]
+        [System.ComponentModel.DataAnnotations.StringLength(50, MinimumLength = 3, ErrorMessage = "El nombre debe tener entre 3 y 50 caracteres.")]
+        public string FullName { get; set; } = string.Empty;
+
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "El correo es obligatorio.")]
+        [System.ComponentModel.DataAnnotations.EmailAddress(ErrorMessage = "Introduce un correo electrónico válido.")]
+        public string Email { get; set; } = string.Empty;
+    }
+}

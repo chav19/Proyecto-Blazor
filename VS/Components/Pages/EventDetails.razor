@@ -1,0 +1,19 @@
+@page "/event-details/{EventName}"
+
+<h3>Detalles del Evento</h3>
+
+<div class="details-box" style="padding: 20px; border: 1px dashed gray;">
+    <h4>@EventName</h4>
+    <p>Aquí se mostrará la descripción completa y agenda del evento en la Actividad 2.</p>
+    
+    <!-- Enlace hacia la página de registro -->
+    <a href="/register/@EventName" style="color: blue; text-decoration: underline;">Ir a Registro para este evento</a>
+</div>
+
+<br />
+<a href="/">← Volver a la lista</a>
+
+@code {
+    [Parameter] 
+    public string EventName { get; set; } = string.Empty;
+}
